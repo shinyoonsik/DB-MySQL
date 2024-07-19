@@ -14,6 +14,7 @@ import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+// build전에 gradle test 작업에서는 아래의 테스트 코드는 제외되어야 한다
 @SpringBootTest
 class PostTest {
 
@@ -24,8 +25,8 @@ class PostTest {
     public void bulkInsert() {
 
         EasyRandom easyRandom = PostFixtureFactory.get(
-                3L,
-                LocalDate.of(2022, 1, 1),
+                4L,
+                LocalDate.of(1970, 1, 1),
                 LocalDate.of(2022, 2, 1)
         );
 

@@ -1,0 +1,52 @@
+select count(*)
+from Post;
+
+# index를 사용하는 경우
+# where(조건절에 사용되는 컬럼), join(조인 조건에 사용되는 컬럼), group by(그룹화에 사용되는 컬럼), order by(정렬에 사용되는 컬럼) 에서 사용하는 컬럼에 인덱스가 있는 경우, 인덱스가 사용된다.
+
+# 실행계획
+# type=ALL => 테이블 full scan
+# type=ref => 인덱스를 사용하여 부분 매칭 수행. 1)복합 인덱스의 경우 특정 컬럼만 매칭되는 경우(복합 인덱스는 순차적으로 앞에서 부터 매칭됨) 2)여러 조건(where절) 중 일부만 인덱스와 매칭되는 경우
+# 일반적으로, 다음 순서대로 type 값이 더 나은 성능을 나타낸다. const(단일 행을 빠르게 검색) > eq_ref(인덱스를 사용하여 정확한 값 매칭, 주로 조인에서 사용) > ref > range > index(인덱스 전체 스캔, 테이블의 데이터는 읽지 않음) > ALL
+# filtered => 조건을 만족하는 행의 비율을 백분율로 나타냄
+# slow query -> explain을 통해 확인 -> 인덱스가 없다면 쿼리 조회 패턴을 개선하여 인덱스 생성 -> 인덱스가 있다면 IGNORE INDEX를 통해 원본 쿼리 속도부터 시작하여 제대로된 인덱스 찾기 use index
+# 사용된 index도 같고 조건절도 같은데! 쿼리 속도가 다르다! -> 동적으로 매핑된 조건에 따라 같은 상황 및 조건에서도 결과가 달라진다. memberId=4인 경우 매칭되는 컬럼이 많아! 느려지는데, memberId=1인 경우 매칭되는 것이 없어 매우 빠르다
+# 조건절에 일치하는 컬럼이 거의 없는 경우에는 인덱스를 잘못 탔다 하더라도 애초에 매칭되는 데이터가 없어 빨리 종료된다.
+explain select p.createdDate, p.memberId, count(p.id) as count
+from test.Post p use index (POST__index_created_date)
+where p.memberId = 1
+  and p.createdDate between '1970-01-01' and '2023-01-01'
+group by p.memberId, p.createdDate;
+
+# full scan보다 느림 5s
+# index로 범위를 좁혀주지 못하니 index 테이블도 scan하고 원본 테이블도 scan하여 더 오래걸림
+create index POST__index_member_id
+    on Post (memberId);
+
+# full scan보다 느림 5s
+create index POST__index_created_date
+    on Post (memberId);
+
+# 압도적으로 빠름 100ms
+create index POST__index_member_id_created_date
+    on Post (memberId, createdDate);
+
+# index컬럼을 선택하기전 컬럼의 카디날리티를 확인하는 방법
+# memberId기준 분포도 확인하는 방법. memberId는 카디날리티가 매우 낮다
+select memberId, count(memberId)
+from Post
+group by memberId;
+
+# createdDate기준 분포도 확인. memberId에 비해 카디날리티가 높다
+select createdDate, count(createdDate)
+from Post
+group by createdDate
+order by 2 desc;
+
+# createdDate의 고유값 개수 구하기 => 19025
+select count(distinct (createdDate))
+from Post;
+
+# memberId의 고유값 개수 구하기 => 2
+select count(distinct (memberId))
+from Post;
