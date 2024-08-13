@@ -130,4 +130,40 @@ public class PostRepository {
 
         return namedParameterJdbcTemplate.queryForObject(sql, params, Long.class);
     }
+
+    public List<Post> findAllByMemberIdAndOrderByIdAsc(Long memberId, int size) {
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("memberId", memberId)
+                .addValue("size", size);
+
+        // 커서기반 페이징에서는 cursor key를 기준으로 반드시 정렬되어있어야 한다
+        String sql = String.format("""
+                select *
+                from %s
+                where memberId = :memberId
+                order by id asc
+                limit :size
+                """, TABLE);
+
+        return namedParameterJdbcTemplate.query(sql, params, POST_ROW_MAPPER);
+    }
+
+    public List<Post> findAllByMemberIdAndGTKeyOrderByIdAsc(Long memberId, Long key, int size) {
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("memberId", memberId)
+                .addValue("key", key)
+                .addValue("size", size);
+
+        // 커서기반 페이징에서는 cursor key를 기준으로 반드시 정렬되어있어야 한다
+        String sql = String.format("""
+                select *
+                from %s
+                where memberId = :memberId and id > :key
+                order by id asc
+                limit :size
+                """, TABLE);
+
+        return namedParameterJdbcTemplate.query(sql, params, POST_ROW_MAPPER);
+    }
+
 }
