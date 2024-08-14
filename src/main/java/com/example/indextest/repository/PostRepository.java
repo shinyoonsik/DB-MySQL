@@ -102,7 +102,7 @@ public class PostRepository {
         MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue("memberId", memberId)
                 .addValue("size", pageable.getPageSize())
-                .addValue("offset", pageable.getPageSize());
+                .addValue("offset", pageable.getOffset());
 
         String sql = String.format("""
                 select *
