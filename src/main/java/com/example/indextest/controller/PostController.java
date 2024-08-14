@@ -1,7 +1,9 @@
 package com.example.indextest.controller;
 
 import com.example.indextest.common.CursorRequest;
+import com.example.indextest.common.CursorRequestByCreatedDate;
 import com.example.indextest.common.PageCursor;
+import com.example.indextest.common.PageCursorByCreatedDate;
 import com.example.indextest.dto.DailyPostCountDTO;
 import com.example.indextest.dto.DailyPostCountReqDTO;
 import com.example.indextest.dto.PostDTO;
@@ -62,10 +64,14 @@ public class PostController {
         return this.postService.getPostsByCursorKey(memberId, cursorRequest);
     }
 
-    // TODO 대게, 최신 데이터부터 위에서 보니까! cursor key를 createdDate로 한경우 내림차순이 default로 되어야 한다
-    // 1. 커서 기반 페이징 개념정리 -> 커서기반 페이징의 경우 클라이언트는 무한 스크롤
-    // 2. 자바의 record 정리
-    // 3. cursorKey = createdDate로 해서 구현 연습
+
+    // http://localhost:8080/test/posts/members/3/by-createdDate?createdAt=2022-02-01T23:50:36&size=10
+    @GetMapping("/members/{memberId}/by-createdDate")
+    public PageCursorByCreatedDate<Post> getPostsByCreatedDate(@PathVariable Long memberId,
+                                                               CursorRequestByCreatedDate cursorRequestByCreatedDate
+    ) {
+        return this.postService.getPostsByCreatedDate(memberId, cursorRequestByCreatedDate);
+    }
 
 
 }

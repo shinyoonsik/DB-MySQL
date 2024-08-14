@@ -6,15 +6,16 @@ import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.StopWatch;
+import org.springframework.web.client.RestTemplate;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.*;
 
-// build전에 gradle test 작업에서는 아래의 테스트 코드는 제외되어야 한다
 @SpringBootTest
 class PostTest {
 
@@ -22,7 +23,7 @@ class PostTest {
     private PostRepository postRepository;
 
     @Test
-    public void bulkInsert() {
+    void bulkInsert() {
 
         EasyRandom easyRandom = PostFixtureFactory.get(
                 4L,
@@ -45,5 +46,18 @@ class PostTest {
         insertStopWatch.stop();
         System.out.println("객체 삽입시간 = " + insertStopWatch.getTotalTimeSeconds());
 
+    }
+
+    @Test
+    void api_test(){
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://192.168.31.7:9180/metrics";
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+//        System.out.println("response = " + response);
+
+        String body = response.getBody();
+        byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
+        System.out.println("bytes의 length = " + bytes.length);
+        System.out.println("body = " + body);
     }
 }
