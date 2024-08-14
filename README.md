@@ -17,7 +17,7 @@ curl -X POST http://localhost:8080/test/posts \
      -d '{"memberId": 1, "contents": "Hello, World!"}'
 ```
 
--- 게시글(post) 조회 by memberId && date
+- 게시글(post) 조회 by memberId && date
 ```
 curl -X GET "http://localhost:8080/test/posts/daily-post-counts?memberId=1&firstDate=2024-07-01&lastDate=2024-07-31"
 ```
