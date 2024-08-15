@@ -1,5 +1,6 @@
 package com.example.indextest.service;
 
+import com.example.indextest.common.CursorRequest;
 import com.example.indextest.common.CursorRequestByCreatedDate;
 import com.example.indextest.common.PageCursor;
 import com.example.indextest.common.PageCursorByCreatedDate;
@@ -8,15 +9,12 @@ import com.example.indextest.dto.DailyPostCountReqDTO;
 import com.example.indextest.dto.PostDTO;
 import com.example.indextest.entity.Post;
 import com.example.indextest.repository.PostRepository;
-import com.example.indextest.common.CursorRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;

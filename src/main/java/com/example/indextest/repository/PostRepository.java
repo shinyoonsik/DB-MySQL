@@ -19,6 +19,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -200,4 +201,44 @@ public class PostRepository {
         return namedParameterJdbcTemplate.query(sql, params, POST_ROW_MAPPER);
     }
 
+    public List<Post> findAllByMemberIdsAndOrderByIdDesc(List<Long> memberIds, int size){
+        if(memberIds.isEmpty()){
+            return Collections.emptyList();
+        }
+
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("memberIds", memberIds)
+                .addValue("size", size);
+
+        String sql = String.format("""
+                select *
+                from %s
+                where memberId in (:memberIds)
+                order by id desc
+                limit :size
+                """, TABLE);
+
+        return namedParameterJdbcTemplate.query(sql, params, POST_ROW_MAPPER);
+    }
+
+    public List<Post> findAllByLessThanIdAndMemberIdsAndOrderByIdDesc(List<Long> memberIds, int size, Long id){
+        if(memberIds.isEmpty()){
+            return Collections.emptyList();
+        }
+
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("memberIds", memberIds)
+                .addValue("size", size)
+                .addValue("key", id);
+
+        String sql = String.format("""
+                select *
+                from %s
+                where memberId in (:memberIds) and id < :key
+                order by id desc
+                limit :size
+                """, TABLE);
+
+        return namedParameterJdbcTemplate.query(sql, params, POST_ROW_MAPPER);
+    }
 }
