@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -37,6 +38,7 @@ public class PostRepository {
             .contents(resultSet.getString("contents"))
             .createdDate(resultSet.getObject("createdDate", LocalDate.class))
             .createdAt(resultSet.getObject("createdAt", LocalDateTime.class))
+            .likeCount(resultSet.getLong("likeCount"))
             .build();
 
     private static final RowMapper<DailyPostCountDTO> DAILY_POST_COUNT_DTO_ROW_MAPPER = (ResultSet resultSet, int rowNums) -> new DailyPostCountDTO(
@@ -184,7 +186,7 @@ public class PostRepository {
         return namedParameterJdbcTemplate.query(sql, params, POST_ROW_MAPPER);
     }
 
-    public List<Post> findAllByMemberIdAndLTKeyOrderByCreatedDate(Long memberId, LocalDateTime createdAt, int size){
+    public List<Post> findAllByMemberIdAndLTKeyOrderByCreatedDate(Long memberId, LocalDateTime createdAt, int size) {
         MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue("memberId", memberId)
                 .addValue("key", createdAt)
@@ -201,8 +203,8 @@ public class PostRepository {
         return namedParameterJdbcTemplate.query(sql, params, POST_ROW_MAPPER);
     }
 
-    public List<Post> findAllByMemberIdsAndOrderByIdDesc(List<Long> memberIds, int size){
-        if(memberIds.isEmpty()){
+    public List<Post> findAllByMemberIdsAndOrderByIdDesc(List<Long> memberIds, int size) {
+        if (memberIds.isEmpty()) {
             return Collections.emptyList();
         }
 
@@ -221,8 +223,8 @@ public class PostRepository {
         return namedParameterJdbcTemplate.query(sql, params, POST_ROW_MAPPER);
     }
 
-    public List<Post> findAllByLessThanIdAndMemberIdsAndOrderByIdDesc(List<Long> memberIds, int size, Long id){
-        if(memberIds.isEmpty()){
+    public List<Post> findAllByLessThanIdAndMemberIdsAndOrderByIdDesc(List<Long> memberIds, int size, Long id) {
+        if (memberIds.isEmpty()) {
             return Collections.emptyList();
         }
 
@@ -241,4 +243,34 @@ public class PostRepository {
 
         return namedParameterJdbcTemplate.query(sql, params, POST_ROW_MAPPER);
     }
+
+    public Optional<Post> findById(Long postId, boolean requiredLock) {
+        String sql = String.format(" select * from %s where id = :postId ", TABLE);
+        if(requiredLock){
+            sql += "for update";
+        }
+        MapSqlParameterSource params = new MapSqlParameterSource().addValue("postId", postId);
+        Post post = namedParameterJdbcTemplate.queryForObject(sql, params, POST_ROW_MAPPER);
+        return Optional.ofNullable(post);
+    }
+
+    public Post update(Post post){
+        String sql = String.format("""
+                update %s set
+                    memberId = :memberId,
+                    contents = :contents,
+                    createdDate = :createdDate,
+                    likeCount = :likeCount,
+                    createdAt = :createdAt
+                where id = :id
+                """, TABLE);
+        BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(post);
+        namedParameterJdbcTemplate.update(sql, params);
+        return post;
+
+    }
+
+
+
+
 }

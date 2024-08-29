@@ -4,6 +4,9 @@ import com.example.indextest.repository.PostRepository;
 import com.example.indextest.util.PostFixtureFactory;
 import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.Test;
+import org.libvirt.Connect;
+import org.libvirt.Domain;
+import org.libvirt.LibvirtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +27,7 @@ class PostTest {
 
     @Test
     void bulkInsert() {
-
-        EasyRandom easyRandom = PostFixtureFactory.get(
+         EasyRandom easyRandom = PostFixtureFactory.get(
                 4L,
                 LocalDate.of(1970, 1, 1),
                 LocalDate.of(2022, 2, 1)
@@ -49,15 +51,11 @@ class PostTest {
     }
 
     @Test
-    void api_test(){
-        RestTemplate restTemplate = new RestTemplate();
-        String url = "http://192.168.31.7:9180/metrics";
-        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-//        System.out.println("response = " + response);
+    void 트랜잭션_테스트(){
 
-        String body = response.getBody();
-        byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
-        System.out.println("bytes의 length = " + bytes.length);
-        System.out.println("body = " + body);
+
+
+
     }
+
 }

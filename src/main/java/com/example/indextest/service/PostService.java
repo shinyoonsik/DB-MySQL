@@ -13,11 +13,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -77,6 +79,25 @@ public class PostService {
             return this.postRepository.findAllByMemberIdAndGTKeyOrderByIdAsc(memberId, cursorRequest.key(), cursorRequest.size());
         }
         return this.postRepository.findAllByMemberIdAndOrderByIdAsc(memberId, cursorRequest.size());
+    }
+
+    @Transactional
+    public void likePost(Long postId){
+        // 동시성 이슈가 발생할 수 있는 기본적인 패턴
+        // 1. 조회
+        // 2. 업데이트
+
+        Optional<Post> optPost = this.postRepository.findById(postId, true);
+        if(optPost.isPresent()){
+            Post post = optPost.get();
+            post.incrementLikeCount();
+            this.postRepository.update(post);
+        }
+    }
+
+    public Post getPost(Long postId){
+        Optional<Post> optPost = this.postRepository.findById(postId, false);
+        return optPost.orElse(null);
     }
 
 

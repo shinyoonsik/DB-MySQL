@@ -24,6 +24,13 @@ repositories {
 }
 
 dependencies {
+    // https://mvnrepository.com/artifact/net.java.dev.jna/jna
+    implementation group: 'net.java.dev.jna', name: 'jna', version: '5.13.0'
+
+
+    // https://mvnrepository.com/artifact/org.libvirt/libvirt
+    implementation group: 'org.libvirt', name: 'libvirt', version: '0.5.1'
+
     compileOnly 'org.projectlombok:lombok:1.18.32'
     annotationProcessor 'org.projectlombok:lombok:1.18.32'
 

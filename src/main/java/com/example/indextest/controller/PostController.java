@@ -7,7 +7,9 @@ import com.example.indextest.common.PageCursorByCreatedDate;
 import com.example.indextest.dto.DailyPostCountDTO;
 import com.example.indextest.dto.DailyPostCountReqDTO;
 import com.example.indextest.dto.PostDTO;
+import com.example.indextest.entity.Member;
 import com.example.indextest.entity.Post;
+import com.example.indextest.service.MemberService;
 import com.example.indextest.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import javax.naming.NotContextException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -25,6 +28,7 @@ import java.util.List;
 @RequestMapping("/posts")
 public class PostController {
     private final PostService postService;
+    private final MemberService memberService;
 
     @GetMapping("/daily-post-counts")
     public List<DailyPostCountDTO> getDailyPostCounts(
@@ -73,5 +77,23 @@ public class PostController {
         return this.postService.getPostsByCreatedDate(memberId, cursorRequestByCreatedDate);
     }
 
+
+    @PostMapping("/members")
+    public Member saveMember(@RequestBody Member member) {
+        return this.memberService.create(member);
+    }
+
+    @GetMapping("/{postId}")
+    public Post getPost(@PathVariable Long postId) throws NotContextException {
+        Post post = this.postService.getPost(postId);
+        if(post == null) throw new NotContextException("postId: " + postId + "에 해당하는 post가 없습니다");
+        else return post;
+    }
+
+    @PostMapping("/{postId}/like")
+    public void likePost(@PathVariable Long postId){
+        this.postService.likePost(postId);
+        System.out.println();
+    }
 
 }
