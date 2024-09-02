@@ -247,7 +247,7 @@ public class PostRepository {
     public Optional<Post> findById(Long postId, boolean requiredLock) {
         String sql = String.format(" select * from %s where id = :postId ", TABLE);
         if(requiredLock){
-            sql += "for update";
+            sql += "for share";
         }
         MapSqlParameterSource params = new MapSqlParameterSource().addValue("postId", postId);
         Post post = namedParameterJdbcTemplate.queryForObject(sql, params, POST_ROW_MAPPER);

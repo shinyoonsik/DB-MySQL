@@ -50,12 +50,4 @@ class PostTest {
 
     }
 
-    @Test
-    void 트랜잭션_테스트(){
-
-
-
-
-    }
-
 }
