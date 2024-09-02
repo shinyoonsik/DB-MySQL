@@ -95,10 +95,21 @@ public class PostService {
         }
     }
 
+    public void likePostByOptimisticLock(Long postId){
+        // 동시성 이슈가 발생할 수 있는 기본적인 패턴
+        // 1. 조회
+        // 2. 업데이트
+        // sol) 조회시점부터 쓰기락을 걸어 다른 트랜잭션이 사용하지 못하도록 막았다. 그러면 동시에 들어온 트랜잭션이라 할지라도 update전에 select한 값이 같지않게 된다
+        Optional<Post> optPost = this.postRepository.findById(postId, false);
+        if(optPost.isPresent()){
+            Post post = optPost.get();
+            post.incrementLikeCount();
+            this.postRepository.update(post);
+        }
+    }
+
     public Post getPost(Long postId){
         Optional<Post> optPost = this.postRepository.findById(postId, false);
         return optPost.orElse(null);
     }
-
-
 }

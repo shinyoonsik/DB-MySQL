@@ -93,7 +93,11 @@ public class PostController {
     @PostMapping("/{postId}/like")
     public void likePost(@PathVariable Long postId){
         this.postService.likePost(postId);
-        System.out.println();
+    }
+
+    @PostMapping("/{postId}/like-by-opt")
+    public void likePostByOptimisticLock(@PathVariable Long postId){
+        this.postService.likePostByOptimisticLock(postId);
     }
 
 }
