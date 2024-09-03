@@ -13,7 +13,7 @@ public class Post {
     private final Long id;
     private final Long memberId;
     private final String contents;
-    private Long likeCount;
+    private Long likeCount; // Post엔티티에 likeCount를 넣음으로써 발생하는 핵심점인 비즈니스 로직 문제
     private Long version;
     private final LocalDate createdDate;
     private final LocalDateTime createdAt;
