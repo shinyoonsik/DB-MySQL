@@ -1,13 +1,13 @@
-package com.example.indextest;
+package com.example;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class IndexTestApplication {
+public class ConcurrencyApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(IndexTestApplication.class, args);
+        SpringApplication.run(ConcurrencyApplication.class, args);
     }
 
 }
