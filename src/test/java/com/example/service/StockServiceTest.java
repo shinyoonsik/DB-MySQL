@@ -84,7 +84,7 @@ class StockServiceTest {
          * sol) 공유자원을 먼저 선점한 스레드가 작업을 마친 이후에 다른 스레드가 공유자원을 가지게 하면 된다!
          */
         Stock stock = this.stockRepository.findById(id).orElseThrow();
-        assertNotEquals(0, stock.getQuantity());
+        assertEquals(0, stock.getQuantity());
     }
 
 }
