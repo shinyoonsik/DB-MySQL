@@ -16,7 +16,7 @@ public class StockService {
 
     private final StockRepository stockRepository;
 
-//    @Transactional
+    @Transactional
     public synchronized void decreaseInventory(Long id, int quantity){
         Stock stock = this.stockRepository.findById(id).orElseThrow(() -> new RuntimeException(format("%d번 재고가 없다", id)));
 
