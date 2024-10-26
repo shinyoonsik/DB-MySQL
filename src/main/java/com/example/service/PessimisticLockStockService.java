@@ -18,6 +18,8 @@ public class PessimisticLockStockService {
 
     @Transactional
     public void decreaseInventory(Long id, int quantity){
+        String sessionId = this.stockRepository.getSessionId();
+        System.out.println("sessionId = " + sessionId);
         Optional<Stock> optStock = this.stockRepository.findByIdWithPessimisticLock(id);
 
         if(optStock.isEmpty()) return;
