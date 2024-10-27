@@ -7,9 +7,9 @@ spring:
     hikari:
       maximum-pool-size: 20
     driver-class-name: com.mysql.cj.jdbc.Driver
-#  jpa:
-#    hibernate:
-#      ddl-auto: create
+  jpa:
+    hibernate:
+      ddl-auto: create
   profiles:
     active: local
 
