@@ -14,6 +14,6 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
     @Query("select s from Stock s where s.id = :id")
     Optional<Stock> findByIdWithPessimisticLock(Long id);
 
-    @Query("select connection_id()")
+    @Query(value = "select connection_id()", nativeQuery = true)
     String getSessionId();
 }
