@@ -54,8 +54,7 @@ class OptimisticLockMemberServiceTest {
         });
     }
 
-    // TODO 낙관적락 멀티 스레드 테스트
-    // TODO 재시도 로직과 비즈니스 로직 분리 -> facade패턴 or class: OptimisticLockRetryTemplate
+
     // TODO @Transactional 추가 정리(https://chatgpt.com/c/9d07ef2e-89fd-4c65-8379-dd60aacf1121) -> notion
     // TODO JPA는 1차 캐시인 영속성 컨텍스트에서 엔티티를 관리해주므로 조회쿼리에 OPTIMISTIC을 붙히면 더티 체킹으로 업데이트시 조회 대상에 대한 버저닝을 JPA가 해주는 건가?
 
